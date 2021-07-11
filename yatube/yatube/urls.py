@@ -18,16 +18,8 @@ from django.urls import include, path
 
 urlpatterns = [
     path('superadmin/', admin.site.urls),
-    #регистрация и авторизация
     path('auth/', include('users.urls')),
-
-    #если нужного шаблона для /auth не нашлось в файле users.urls — 
-    #ищем совпадения в файле django.contrib.auth.urls
     path('auth/', include('django.contrib.auth.urls')),
-
     path('about/', include('about.urls', namespace='about')),
-
     path("", include("posts.urls")),
-
-   
 ]
