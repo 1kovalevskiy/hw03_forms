@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Последние обновления на сайте{% endblock %}
+{% block header %}
+<a href="{% url 'group_list' %}">Список сообществ</a><br>
+<a href="{% url 'user_list' %}">Список пользователей</a><br><br>
+Последние обновления на сайте
+{% endblock %}
+{% block content %}
+  
+  {% for post in page %}
+    <h3>
+      Автор: {{ post.author.get_full_name }}, Дата публикации: {{ post.pub_date|date:"d M Y" }}
+    </h3>
+    <p>{{ post.text|linebreaksbr }}</p>
+    {% if not forloop.last %}<hr>{% endif %}
+  {% endfor %}
+  {% include "paginator.html" %}
+  
+{% endblock %} 
