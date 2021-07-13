@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 
 
 def index(request):
-    post_list = Post.objects.all().order_by('-pub_date')
+    post_list = Post.objects.all()
     paginator = Paginator(post_list, 10)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
@@ -18,7 +18,7 @@ def index(request):
 
 def group_posts(request, slug):
     group = get_object_or_404(Group, slug=slug)
-    post_list = group.posts.all().order_by('-pub_date')
+    post_list = group.posts.all()
     paginator = Paginator(post_list, 10)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
@@ -47,13 +47,9 @@ def profile(request, username):
 
 
 def post_view(request, username, post_id):
-    post = get_object_or_404(Post, pk=post_id)
     user = get_object_or_404(User, username=username)
-    post2 = Post.objects.get(pk=post_id)
-    if str(post2.author) != str(username):
-        return redirect("/")
-    post = user.posts.get(pk=post_id)
-    post_count = Post.objects.filter(author=user).count
+    post = get_object_or_404(Post, pk=post_id, author=user)
+    post_count = user.posts.count
     content = {
         "user_post": user,
         "post": post,
@@ -72,12 +68,11 @@ def new_post(request):
     if request.method == 'POST':
         form = PostForm(request.POST)
         if form.is_valid():
-            Post.objects.create(author=request.user,
-                                text=form.cleaned_data['text'],
-                                group=form.cleaned_data['group'])
-            return redirect("/")
-        else:
-            print(form.errors)
+            post = form.save(commit=False)
+            post.author = request.user
+            post.save()
+            print(post.pk)
+            return redirect(f"/{post.author}/{post.pk}/")
         return render(request, "new_post.html", {"form": form})
     form = PostForm()
     return render(request, "new_post.html", {"form": form})
@@ -85,20 +80,15 @@ def new_post(request):
 
 @login_required
 def post_edit(request, username, post_id):
-    if str(request.user) != str(username):
+    user = get_object_or_404(User, username=username)
+    post = get_object_or_404(Post, author=user, pk=post_id)
+    if request.user != user:
         return redirect("/")
-    post2 = Post.objects.get(pk=post_id)
-    if str(post2.author) != str(username):
-        return redirect("/")
-    post = get_object_or_404(Post, pk=post_id)
     if request.method == 'POST':
-        form = PostForm(request.POST, instance=post)
+        form = PostForm(request.POST or None, instance=post)
         if form.is_valid():
-            post = form.save(commit=False)
-            post.save()
+            form.save()
             return redirect(f"/{username}/{post_id}")
-        else:
-            print(form.errors)
         return render(request, "post_edit.html", {"form": form})
     form = PostForm(instance=post)
     return render(request, "post_edit.html", {"form": form})

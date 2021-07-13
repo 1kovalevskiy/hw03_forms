@@ -6,3 +6,11 @@ class PostForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = ["text", "group"]
+        help_texts = {
+            "text": "Здесь должен быть текст поста",
+            "group": "А здесь можно выбрать группу для опубликования"
+        }
+        labels = {
+            "text": "Текс поста",
+            "group": "Группа"
+        }
