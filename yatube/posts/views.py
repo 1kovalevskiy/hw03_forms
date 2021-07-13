@@ -72,7 +72,7 @@ def new_post(request):
             post.author = request.user
             post.save()
             print(post.pk)
-            return redirect(f"/{post.author}/{post.pk}/")
+            return redirect("/")
         return render(request, "new_post.html", {"form": form})
     form = PostForm()
     return render(request, "new_post.html", {"form": form})
