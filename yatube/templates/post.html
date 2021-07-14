@@ -1,29 +1,12 @@
 {% extends "base.html" %}
 {% block title %}Профиль {{ user_post.username }}{% endblock %}
-{% block header %}<a href="/{{user_post.username}}/" role="button">
-    Профиль @{{ user_post.username }}
-</a>{% endblock %}
-{% block description %}{{ user_post.first_name }} {{ user_post.last_name }} <br>
-Подписчиков: XXX <br>
-Подписан: XXX <br>
-Публикаций: {{ post_count }}
+{% block header %}<a href="{% url 'profile' user_post.username %}">Профиль @{{ user_post.username }}</a>
+     
 {% endblock %}
+{% block description %}{% include "includes/author_card.html" %}{% endblock %}
 
 {% block content %}
 
-    <h3>
-      Автор: {{ post.author.get_full_name }}, Дата публикации: {{ post.pub_date|date:"d M Y" }}
-    </h3>
-    <p>{{ post.text|linebreaksbr }}</p>
-     <!-- Ссылка на страницу записи в атрибуте href-->
-     <a class="btn btn-sm text-muted" href="/{{user_post.username}}/{{post.pk}}/" role="button">
-        Добавить комментарий
-      </a>
-      <!-- Ссылка на редактирование, показывается только автору записи.
-        Эту ссылку вы подключите в финальном задании спринта -->
-      <a class="btn btn-sm text-muted" href="/{{user_post.username}}/{{post.pk}}/edit" role="button">
-        Редактировать
-      </a>
-    {% if not forloop.last %}<hr>{% endif %}
+    {% include 'includes/post_card.html' %}
 
 {% endblock %}

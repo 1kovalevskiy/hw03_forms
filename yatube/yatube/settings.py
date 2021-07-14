@@ -127,7 +127,8 @@ STATIC_URL = "/static/"
 # теперь логотип можно будет запросить по адресу sitename.ex**/static/**images/logo.png
 
 # задаём адрес директории, куда командой *collectstatic* будет собрана вся статика
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
+# STATIC_ROOT = os.path.join(BASE_DIR, "static")
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 
 # Login
 

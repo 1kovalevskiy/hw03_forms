@@ -39,7 +39,7 @@ def profile(request, username):
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
     content = {
-        "user_profile": user,
+        "user_post": user,
         "page": page,
         "post_count": post_count
     }
@@ -47,8 +47,8 @@ def profile(request, username):
 
 
 def post_view(request, username, post_id):
-    user = get_object_or_404(User, username=username)
-    post = get_object_or_404(Post, pk=post_id, author=user)
+    post = get_object_or_404(Post, pk=post_id, author__username=username)
+    user = post.author
     post_count = user.posts.count
     content = {
         "user_post": user,
@@ -65,30 +65,22 @@ def users_list(request):
 
 @login_required
 def new_post(request):
-    if request.method == 'POST':
-        form = PostForm(request.POST)
-        if form.is_valid():
-            post = form.save(commit=False)
-            post.author = request.user
-            post.save()
-            print(post.pk)
-            return redirect("/")
-        return render(request, "new_post.html", {"form": form})
-    form = PostForm()
+    form = PostForm(request.POST or None)
+    if form.is_valid():
+        post = form.save(commit=False)
+        post.author = request.user
+        post.save()
+        return redirect("/")
     return render(request, "new_post.html", {"form": form})
 
 
 @login_required
 def post_edit(request, username, post_id):
-    user = get_object_or_404(User, username=username)
-    post = get_object_or_404(Post, author=user, pk=post_id)
-    if request.user != user:
+    post = get_object_or_404(Post, author__username=username, pk=post_id)
+    if request.user != post.author:
         return redirect("/")
-    if request.method == 'POST':
-        form = PostForm(request.POST or None, instance=post)
-        if form.is_valid():
-            form.save()
-            return redirect(f"/{username}/{post_id}")
-        return render(request, "post_edit.html", {"form": form})
-    form = PostForm(instance=post)
+    form = PostForm(request.POST or None, instance=post)
+    if form.is_valid():
+        form.save()
+        return redirect("post", username=username, post_id=post_id)
     return render(request, "post_edit.html", {"form": form})
