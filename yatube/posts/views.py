@@ -49,7 +49,8 @@ def profile(request, username):
 def post_view(request, username, post_id):
     post = get_object_or_404(Post, pk=post_id, author__username=username)
     user = post.author
-    post_count = user.posts.count
+    "Я, честно, его уже 2 раза писал как count()"
+    post_count = user.posts.count()
     content = {
         "user_post": user,
         "post": post,

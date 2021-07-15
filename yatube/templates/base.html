@@ -17,15 +17,25 @@
     <main>
       <div class="container">
         <h1>{% block header %}The Last Social Media You'll Ever Need{% endblock %}</h1>
-
         <p>{% block description %}
           <!-- Описание страницы -->
         {% endblock %}
         </p>
-
+        <!-- Либо все писать в "content"
+        либо в "left-content" и "right-content" -->
         {% block content %}
-          <!-- Содержимое страницы -->
+          <div class="row">
+            <div class="col-12 col-md-3">
+                {% block left-content %}
+                {% endblock %} 
+            </div>
+            <div class="col-12 col-md-9">
+                {% block right-content %}
+                {% endblock %} 
+            </div>
+          </div> 
         {% endblock %}
+          
       </div>
     </main>
   {% include 'includes/footer.html' %}

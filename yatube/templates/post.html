@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {% block title %}Профиль {{ user_post.username }}{% endblock %}
-{% block header %}<a href="{% url 'profile' user_post.username %}">Профиль @{{ user_post.username }}</a>
+{% block header %}
      
 {% endblock %}
-{% block description %}{% include "includes/author_card.html" %}{% endblock %}
+{% block left-content %}{% include "includes/author_card.html" %}{% endblock %}
 
-{% block content %}
+{% block right-content %}
 
     {% include 'includes/post_card.html' %}
 
