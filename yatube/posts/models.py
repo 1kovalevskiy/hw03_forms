@@ -22,7 +22,7 @@ class Post(models.Model):
                               related_name="posts", blank=True, null=True)
 
     def __str__(self):
-        return f"Пост автора {self.author}, id {self.pk}: {self.text[:30]}"
+        return self.text[:15]
 
     class Meta:
         ordering = ['-pub_date']

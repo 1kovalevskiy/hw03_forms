@@ -11,6 +11,6 @@ class PostForm(forms.ModelForm):
             "group": "А здесь можно выбрать группу для опубликования"
         }
         labels = {
-            "text": "Текс поста",
+            "text": "Текст поста",
             "group": "Группа"
         }
